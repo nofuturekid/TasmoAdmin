@@ -56,7 +56,11 @@ if [[ -z "${TASMO_DATADIR}" ]]; then
   rm -f -r /var/www/tasmoadmin/data
   ln -s /data/tasmoadmin /var/www/tasmoadmin/data
 else
-    sed -i 's@location ^~ /data/firmwares/ {@location ^~ /data/firmwares/ {\n            alias '"$TASMO_DATADIR"'firmwares/;@' /etc/nginx/nginx.conf
+    # The location rules live in the image-owned include, which is rewritten from the
+    # image on every container creation; skip if a previous start already patched it.
+    if ! grep -q 'alias ' /etc/nginx/tasmoadmin-locations.conf; then
+        sed -i 's@location ^~ /data/firmwares/ {@location ^~ /data/firmwares/ {\n        alias '"$TASMO_DATADIR"'firmwares/;@' /etc/nginx/tasmoadmin-locations.conf
+    fi
 fi
 
 # Ensure file permissions
