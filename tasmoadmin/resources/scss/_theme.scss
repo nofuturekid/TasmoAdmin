@@ -408,14 +408,10 @@ body:not(.nightmode) .navbar.fixed-top .navbar-toggler-icon {
   text-transform: uppercase;
 }
 
-.table thead th:first-child {
-  border-top-left-radius: var(--ta-radius-sm);
-  border-bottom-left-radius: var(--ta-radius-sm);
-}
-
-.table thead th:last-child {
-  border-top-right-radius: var(--ta-radius-sm);
-  border-bottom-right-radius: var(--ta-radius-sm);
+// Round the (already scrolling, hence clipping) container instead of the
+// header cells, so header and rows share one outline.
+.devices-table-panel .table-responsive {
+  border-radius: var(--ta-radius-sm);
 }
 
 .table thead th a,
