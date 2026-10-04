@@ -87,6 +87,7 @@ Some environment variables are configured to allow easier customisation of the a
 - `TASMO_TMPDIR` - Directory for sessions and temporary cache files, including a trailing slash. Defaults to `./tasmoadmin/tmp/`
 - `TASMO_DEBUG` - Set to `true` to display PHP errors. Disabled by default.
 - `NO_AUTH` - Set to `true` to bypass the built-in login when authentication is handled externally
+- `TASMO_AUTH_HEADER` and `TASMO_TRUSTED_PROXIES` - Trust an authenticating reverse proxy. When both are set, a request is treated as logged in if it comes from one of the proxy addresses (comma-separated IPs or CIDRs, IPv4 and IPv6; matched against the connecting address, not `X-Forwarded-For`) and carries the named header (e.g. `X-authentik-username`) with a non-empty value. All other requests keep the built-in login. The proxy must strip or overwrite this header on client requests (Authentik and Traefik forward-auth do), so only use this behind a reverse proxy. Logging out does not end a proxy-authenticated session.
 - `TASMO_DEVICE_PASSWORD_KEY` - Base64-encoded 32-byte secret for device password encryption at rest
 - `TASMO_ALLOW_CROSS_SITE_IFRAME` - Set to `true` to embed TasmoAdmin in another HTTPS site, such as Home Assistant or Organizr; HTTP requests remain restricted
 
