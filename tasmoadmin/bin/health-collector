@@ -33,6 +33,27 @@ if (!function_exists('__')) {
     }
 }
 
+// Idle (instead of exiting) while health is disabled or MQTT is not configured:
+// s6 restarts an exited service immediately, which would boot PHP every second.
+// A fresh Config per check picks up settings changed in the web UI.
+$waitLogged = false;
+while (true) {
+    $current = (new Config(_DATADIR_, _APPROOT_))->readAll();
+    if ('1' === (string) ($current['health_enabled'] ?? '') && '' !== (string) ($current['mqtt_discovery_host'] ?? '')) {
+        break;
+    }
+    if (in_array('--once', $argv, true)) {
+        fwrite(STDERR, "health_enabled is off or mqtt_discovery_host not configured; exiting.\n");
+
+        exit(1);
+    }
+    if (!$waitLogged) {
+        fwrite(STDERR, "health_enabled is off or mqtt_discovery_host not configured; waiting.\n");
+        $waitLogged = true;
+    }
+    sleep(60);
+}
+
 /** @var Container $container */
 $container = require _APPROOT_.'includes/container.php';
 
@@ -43,19 +64,8 @@ $healthDir = getenv('TASMO_HEALTHDIR') ?: _APPROOT_.'health/';
 $repo = new HealthRepository(rtrim($healthDir, '/').'/health.db');
 $repo->ensureSchema();
 
-if ('1' !== $config->read('health_enabled')) {
-    fwrite(STDERR, "health_enabled is off; exiting.\n");
-
-    exit(0);
-}
-
 $raw = $config->readAll(); // decrypted, NOT htmlspecialchars'd — same path discovery uses
 $host = (string) ($raw['mqtt_discovery_host'] ?? '');
-if ('' === $host) {
-    fwrite(STDERR, "mqtt_discovery_host not configured; exiting.\n");
-
-    exit(1);
-}
 $port = (int) ($raw['mqtt_discovery_port'] ?? 1883);
 $username = (string) ($raw['mqtt_discovery_username'] ?? '');
 $password = (string) ($raw['mqtt_discovery_password'] ?? '');
