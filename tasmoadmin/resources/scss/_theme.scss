@@ -376,6 +376,31 @@ body:not(.nightmode) .navbar.fixed-top .navbar-toggler-icon {
   color: var(--ta-text);
 }
 
+// Native file inputs: Bootstrap paints the "Choose File" button from its own
+// light-only tertiary background, which is unreadable on the night-mode field.
+.form-control::file-selector-button,
+input[type="file"]::file-selector-button {
+  background-color: var(--ta-surface-2);
+  background-image: none;
+  border-color: var(--ta-border-strong);
+  color: var(--ta-text);
+}
+
+.form-control:hover:not(:disabled):not([readonly])::file-selector-button,
+input[type="file"]:hover:not(:disabled)::file-selector-button {
+  background-color: var(--ta-surface-hover);
+}
+
+.form-control:focus::file-selector-button,
+input[type="file"]:focus-visible::file-selector-button {
+  background-color: var(--ta-accent-soft);
+  color: var(--ta-text);
+}
+
+.form-control:disabled::file-selector-button {
+  color: var(--ta-text-muted);
+}
+
 .btn {
   border-radius: var(--ta-radius-sm);
   font-weight: 500;
