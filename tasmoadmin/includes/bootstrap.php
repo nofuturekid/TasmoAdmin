@@ -76,6 +76,7 @@ use Selective\Container\Container;
 use TasmoAdmin\Config;
 use TasmoAdmin\Helper\EnvironmentHelper;
 use TasmoAdmin\Helper\JsonLanguageHelper;
+use TasmoAdmin\Helper\ProxyAuthHelper;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run;
 
@@ -116,6 +117,7 @@ $langHelper->dumpJson();
 if ((isset($_SESSION['login']) && '1' == $_SESSION['login'])
     || '0' == $Config->read('login')
     || EnvironmentHelper::isEnabled('NO_AUTH')
+    || ProxyAuthHelper::isAuthenticatedByProxy($_SERVER)
 ) {
     $loggedin = true;
 }
