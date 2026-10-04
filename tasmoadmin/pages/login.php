@@ -19,7 +19,7 @@ if (0 == $Config->read('login')) {
 $loginHelper = new LoginHelper($Config);
 
 if (!empty($_POST)) {
-    $home = $Config->read('homepage');
+    $home = $Config->homepage();
     if (isset($_REQUEST['register']) && ('' === $user || '' === $password)) {
         $loginHelper->register($_REQUEST['username'], $_REQUEST['password']);
         session_regenerate_id(true);

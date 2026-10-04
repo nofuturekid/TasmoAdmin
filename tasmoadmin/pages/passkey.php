@@ -72,7 +72,7 @@ try {
             $passkeyHelper->finishLogin($payload, $_SESSION);
             session_regenerate_id(true);
             $_SESSION['login'] = '1';
-            $respond(200, ['ok' => true, 'redirect' => _BASEURL_.$Config->read('homepage')]);
+            $respond(200, ['ok' => true, 'redirect' => _BASEURL_.$Config->homepage()]);
 
             // no break
         default:

@@ -30,4 +30,21 @@ final class ConfigHealthDefaultsTest extends TestCase
         self::assertSame('180', $config->read('health_offline_grace'));
         self::assertSame('#', $config->read('health_mqtt_subscription'));
     }
+
+    public function testHealthHomepageIsUsedWhileHealthIsEnabled(): void
+    {
+        $config = new Config($this->dataDir, $this->dataDir);
+        $config->write('homepage', 'health');
+
+        self::assertSame('health', $config->homepage());
+    }
+
+    public function testHealthHomepageFallsBackToDefaultWhenHealthIsDisabled(): void
+    {
+        $config = new Config($this->dataDir, $this->dataDir);
+        $config->write('homepage', 'health');
+        $config->write('health_enabled', '0');
+
+        self::assertSame('start', $config->homepage());
+    }
 }

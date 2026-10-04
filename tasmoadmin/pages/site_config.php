@@ -215,6 +215,11 @@ $autoFirmwareChannels = ['stable', 'dev'];
 						>
 							<?php echo __('CONFIG_HOMEPAGE_DEVICES', 'USER_CONFIG'); ?>
 						</option>
+						<option value='health'
+							<?php echo 'health' == $config['homepage'] ? 'selected="selected"' : ''; ?>
+						>
+							<?php echo __('CONFIG_HOMEPAGE_HEALTH', 'USER_CONFIG'); ?>
+						</option>
 
 					</select>
 				</div>

@@ -92,7 +92,7 @@ $themeToggleMarkup = ob_get_clean();
 			<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top py-1">
 				<div class="container-fluid">
 					<?php // var_dump( $page );?>
-					<a class="navbar-brand py-0 logo" href='<?php echo _BASEURL_.$Config->read('homepage'); ?>'>
+					<a class="navbar-brand py-0 logo" href='<?php echo _BASEURL_.$Config->homepage(); ?>'>
 						<img src='<?php echo _RESOURCESURL_; ?>img/logo.svg' height='50px'/>
 					</a>
 					<div class="mobile-header-actions d-md-none ms-auto">
