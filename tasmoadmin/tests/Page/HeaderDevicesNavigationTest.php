@@ -38,6 +38,11 @@ class HeaderDevicesNavigationTest extends TestCase
                 };
             }
 
+            public function homepage(): string
+            {
+                return 'devices';
+            }
+
             public function getRequestConcurrency(): int
             {
                 return 4;

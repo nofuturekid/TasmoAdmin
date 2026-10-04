@@ -153,6 +153,19 @@ class Config
         return htmlspecialchars($config[$key]);
     }
 
+    /**
+     * Configured homepage; falls back to the default while the health feature is disabled.
+     */
+    public function homepage(): string
+    {
+        $homepage = (string) $this->read('homepage');
+        if ('health' === $homepage && '1' !== $this->read('health_enabled')) {
+            return $this->defaults['homepage'];
+        }
+
+        return $homepage;
+    }
+
     public function write(string $key, $value): void
     {
         $this->writeAll([$key => $value]);

@@ -65,7 +65,7 @@ function render_template(Request $request): Response
 {
     extract($request->attributes->all(), EXTR_SKIP);
     if ('index' === $page) {
-        $page = $Config->read('homepage');
+        $page = $Config->homepage();
     }
 
     if ('backup' === $page) {
