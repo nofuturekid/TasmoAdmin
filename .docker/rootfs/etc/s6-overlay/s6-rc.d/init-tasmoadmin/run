@@ -61,8 +61,14 @@ fi
 
 # Ensure file permissions
 chown -R nginx:nginx /data/tasmoadmin
-find /data/tasmoadmin -not -perm 0644 -type f -exec chmod 0644 {} \;
-find /data/tasmoadmin -not -perm 0755 -type d -exec chmod 0755 {} \;
+# The sessions directory is skipped: sess_<id> file names are valid login cookies,
+# so they must stay private (0700 dir / 0600 files, owned by nginx).
+find /data/tasmoadmin -path /data/tasmoadmin/sessions -prune -o -not -perm 0644 -type f -exec chmod 0644 {} \;
+find /data/tasmoadmin -path /data/tasmoadmin/sessions -prune -o -not -perm 0755 -type d -exec chmod 0755 {} \;
+if [ -d "/data/tasmoadmin/sessions" ]; then
+    chmod 0700 /data/tasmoadmin/sessions
+    find /data/tasmoadmin/sessions -type f -exec chmod 0600 {} \;
+fi
 if [ -f "/data/tasmoadmin/.device-password.key" ]; then
     chmod 0600 /data/tasmoadmin/.device-password.key
 fi
