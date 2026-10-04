@@ -24,6 +24,21 @@ if [[ -L "/data/nginx/nginx.conf" ]]; then
   cp -Rv /data/nginx/nginx.conf /etc/nginx/nginx.conf.org
 fi
 
+# The persisted configs predate /etc/nginx/tasmoadmin-locations.conf. That include
+# carries the security-relevant location rules (deny /data, ...), which must come
+# from the image. Replace such a config with the image default, keep a backup.
+for conf in nginx.conf nginx-ssl.conf; do
+  persisted="/data/nginx/${conf}"
+  if [[ -f "${persisted}" && ! -L "${persisted}" ]] && ! grep -q 'tasmoadmin-locations.conf' "${persisted}"; then
+    backup="${persisted}.bak-$(date +%Y%m%d)"
+    echo "WARNING: ${persisted} has no include of tasmoadmin-locations.conf (old, insecure location rules)."
+    echo "WARNING: Backing it up to ${backup} and replacing it with the image default."
+    echo "WARNING: Re-apply your own changes to the new file, but keep the include line."
+    cp -p "${persisted}" "${backup}"
+    cp "/usr/share/tasmoadmin/nginx/${conf}" "${persisted}"
+  fi
+done
+
 echo 'Symlinking /etc/nginx.conf from persistent storage location...'
 rm -rf /etc/nginx/nginx.conf
 ln -s /data/nginx/nginx.conf /etc/nginx/nginx.conf

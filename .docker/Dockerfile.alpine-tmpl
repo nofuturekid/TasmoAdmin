@@ -98,6 +98,9 @@ RUN echo "fastcgi_param BUILD_REF ${BUILD_REF};" >> /etc/nginx/fastcgi_params
 
 # Copy root filesystem
 COPY .docker/rootfs /
+# Pristine nginx configs, used to replace outdated ones persisted in /data/nginx
+RUN mkdir -p /usr/share/tasmoadmin/nginx \
+    && cp /etc/nginx/nginx.conf /etc/nginx/nginx-ssl.conf /usr/share/tasmoadmin/nginx/
 
 # Setup application
 COPY --from=builder /tasmoadmin /var/www/tasmoadmin
