@@ -67,11 +67,13 @@ fi
 chown -R nginx:nginx /data/tasmoadmin
 # The sessions directory is skipped: sess_<id> file names are valid login cookies,
 # so they must stay private (0700 dir / 0600 files, owned by nginx).
-find /data/tasmoadmin -path /data/tasmoadmin/sessions -prune -o -not -perm 0644 -type f -exec chmod 0644 {} \;
-find /data/tasmoadmin -path /data/tasmoadmin/sessions -prune -o -not -perm 0755 -type d -exec chmod 0755 {} \;
+find /data/tasmoadmin -path /data/tasmoadmin/sessions -prune -o -not -perm 0644 -type f -exec chmod 0644 {} +
+find /data/tasmoadmin -path /data/tasmoadmin/sessions -prune -o -not -perm 0755 -type d -exec chmod 0755 {} +
 if [ -d "/data/tasmoadmin/sessions" ]; then
     chmod 0700 /data/tasmoadmin/sessions
-    find /data/tasmoadmin/sessions -type f -exec chmod 0600 {} \;
+    # Batched and only for files that need it: one chmod per file took longer
+    # than s6's 5 s start limit once sessions piled up, so php-fpm never started.
+    find /data/tasmoadmin/sessions -type f -not -perm 0600 -exec chmod 0600 {} +
 fi
 if [ -f "/data/tasmoadmin/.device-password.key" ]; then
     chmod 0600 /data/tasmoadmin/.device-password.key
